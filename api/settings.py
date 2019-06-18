@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("sqlite:///:memory:", echo=True)
+engine = create_engine("postgresql+psycopg2://test_user:test_password@localhost:5432/notes_db", echo=True)
 Session = sessionmaker(bind=engine)
 
 
