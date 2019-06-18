@@ -33,7 +33,7 @@ class Note(Base):
     __tablename__ = "notes"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     user = relationship("User")
 
     datetime = Column(DateTime)
