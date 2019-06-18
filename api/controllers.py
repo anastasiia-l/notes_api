@@ -1,11 +1,13 @@
+from hashlib import sha256
+import uuid
+import datetime
+
 from sanic.response import json
 from sanic.views import HTTPMethodView
 
-from .models import User
+from .models import User, Note
 from .settings import scoped_session
-
-from hashlib import sha256
-import uuid
+from utils.auth import authorized
 
 
 class UserController(HTTPMethodView):
@@ -63,3 +65,32 @@ class Auth(HTTPMethodView):
             user.token = token
 
         return json({"valid": True, "data": {"access_token": token}})
+
+
+class NoteController(HTTPMethodView):
+    decorators = [authorized()]
+
+    async def get(self, request):
+        with scoped_session() as session:
+            user = session.query(User).filter_by(token=request.token).first()
+            #TODO: transform Note to dict
+            notes = [ note._asdict() for note in session.query(Note).filter_by(user_id=user.id)]
+
+        return json({'notes': notes})
+
+    async def post(self, request):
+
+        title = request.json.get('title')
+        text = request.json.get('text')
+        current_datetime = datetime.datetime.now()
+
+        with scoped_session() as session:
+            user = session.query(User).filter_by(token=request.token).first()
+            note = Note(user_id=user.id, title=title, text=text, datetime=current_datetime)
+            session.add(note)
+            print(note)
+
+        return json({'msg': 'Successfully created'})
+
+
+    #TODO: patch and delete requests

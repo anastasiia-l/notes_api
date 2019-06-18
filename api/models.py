@@ -20,7 +20,7 @@ class User(Base):
     last_name = Column(String(35), nullable=True)
 
     def __repr__(self):
-        return "<User(id='%s', email='%s')>".format(self.id, self.email)
+        return "<User(id={}, email={})>".format(self.id, self.email)
 
     def full_name(self):
         return "{} {}".format(self.first_name, self.last_name)
@@ -41,6 +41,6 @@ class Note(Base):
     text = Column(String(500), nullable=True)
 
     def __repr__(self):
-        return "<Note(id='%s', title='%s')>".format(self.id, self.title)
+        return "<Note(id={}, title={})>".format(str(self.id), self.title)
 
 Base.metadata.create_all(engine)
