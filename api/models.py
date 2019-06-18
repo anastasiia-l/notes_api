@@ -1,5 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, DateTime, Date
+from sqlalchemy import Column, String, Integer, ForeignKey, Date, DateTime
+from sqlalchemy.orm import relationship
 from .settings import engine
 
 Base = declarative_base()
@@ -27,5 +28,19 @@ class User(Base):
     def formatted_birthday(self):
         return self.birthday.strftime("%m/%d/%Y")
 
+
+class Note(Base):
+    __tablename__ = "notes"
+
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship("User")
+
+    datetime = Column(DateTime)
+    title = Column(String(120), nullable=False)
+    text = Column(String(500), nullable=True)
+
+    def __repr__(self):
+        return "<Note(id='%s', title='%s')>".format(self.id, self.title)
 
 Base.metadata.create_all(engine)
