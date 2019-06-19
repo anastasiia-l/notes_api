@@ -93,7 +93,17 @@ class NoteController(HTTPMethodView):
         return json({'msg': 'Successfully created'})
 
     async def patch(self, request):
-        pass
+        note_id = request.json.get('id')
+        data = request.json.get('data')
+
+        if "id" in data:
+            data.pop("id")
+
+        with scoped_session() as session:
+            user = session.query(User).filter_by(token=request.token).first()
+            updated_notes = session.query(Note).filter(Note.user_id == user.id and Note.id == note_id).update(data)
+
+        return json({'updated': updated_notes})
 
     async def delete(self, request):
         title = request.json.get('title')
