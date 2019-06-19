@@ -73,7 +73,7 @@ class NoteController(HTTPMethodView):
     async def get(self, request):
         with scoped_session() as session:
             user = session.query(User).filter_by(token=request.token).first()
-            #TODO: transform Note to dict
+
             notes = [ note._asdict() for note in session.query(Note).filter_by(user_id=user.id)]
 
         return json({'notes': notes})

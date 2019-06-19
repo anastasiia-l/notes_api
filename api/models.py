@@ -1,9 +1,16 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer, ForeignKey, Date, DateTime
+from sqlalchemy import Column, String, Integer, ForeignKey, Date, DateTime, inspect
 from sqlalchemy.orm import relationship
 from .settings import engine
 
-Base = declarative_base()
+from sqlalchemy.ext.declarative import as_declarative
+
+
+@as_declarative()
+class Base:
+    def _asdict(self):
+        return {c.key: getattr(self, c.key)
+                for c in inspect(self).mapper.column_attrs}
 
 
 class User(Base):
