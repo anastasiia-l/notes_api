@@ -92,5 +92,16 @@ class NoteController(HTTPMethodView):
 
         return json({'msg': 'Successfully created'})
 
+    async def patch(self, request):
+        pass
 
-    #TODO: patch and delete requests
+    async def delete(self, request):
+        title = request.json.get('title')
+
+        with scoped_session() as session:
+            user = session.query(User).filter_by(token=request.token).first()
+
+            deleted_notes = session.query(Note).filter(Note.user_id == user.id and Note.title == title).delete()
+
+        return json({'deleted': deleted_notes})
+
