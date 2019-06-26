@@ -85,8 +85,9 @@ class NoteController(HTTPMethodView):
         with scoped_session() as session:
             note = Note(user_id=request['user']['id'], title=title, text=text, datetime=current_datetime)
             session.add(note)
+            session.expunge(note)
 
-        return json({'msg': 'Successfully created'})
+        return json({'msg': 'Successfully created {}'.format(note)})
 
     async def patch(self, request):
         note_id = request.json.get('id')
