@@ -32,4 +32,4 @@ def create_app():
                 user = session.query(User).filter_by(token=request.token).first()._asdict()
             request["user"] = user
 
-    app.go_fast(debug=True, workers=os.cpu_count())
+    app.go_fast(host="0.0.0.0", port=5000, debug=True, workers=os.cpu_count())
