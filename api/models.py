@@ -1,4 +1,3 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, String, Integer, ForeignKey, Date, DateTime, inspect
 from sqlalchemy.orm import relationship
 from .settings import engine
@@ -49,5 +48,6 @@ class Note(Base):
 
     def __repr__(self):
         return "<Note(id={}, title={})>".format(str(self.id), self.title)
+
 
 Base.metadata.create_all(engine)

@@ -4,7 +4,7 @@ services:
     hostname: notes
     build: .
     ports:
-      - "5000:5000"
+      - "${PORT}:${PORT}"
     volumes:
       - ./app/:/app/
     depends_on:
@@ -12,8 +12,8 @@ services:
   db:
     image: postgres:10
     environment:
-      - POSTGRES_USER=test_user
-      - POSTGRES_PASSWORD=test_password
-      - POSTGRES_DB=notes_db
+      - POSTGRES_USER=DB_USER
+      - POSTGRES_PASSWORD=DB_PASSWORD
+      - POSTGRES_DB=DB_NAME
     expose:
       - 5432

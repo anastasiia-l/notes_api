@@ -13,14 +13,12 @@ from utils.auth import authorized
 class UserController(HTTPMethodView):
 
     async def get(self, request):
-
         with scoped_session() as session:
             stmt = User.__table__.select()
             users = [dict(u) for u in session.execute(stmt)]
         return json({'users': users})
 
     async def post(self, request):
-
         email = request.json.get('email')
 
         with scoped_session() as session:
@@ -72,12 +70,11 @@ class NoteController(HTTPMethodView):
 
     async def get(self, request):
         with scoped_session() as session:
-            notes = [ note._asdict() for note in session.query(Note).filter_by(user_id=request['user']['id']) ]
+            notes = [note._asdict() for note in session.query(Note).filter_by(user_id=request['user']['id'])]
 
         return json({'notes': notes})
 
     async def post(self, request):
-
         title = request.json.get('title')
         text = request.json.get('text')
         current_datetime = datetime.datetime.now()
@@ -96,7 +93,8 @@ class NoteController(HTTPMethodView):
             data.pop("id")
 
         with scoped_session() as session:
-            updated_notes = session.query(Note).filter(Note.user_id == request['user']['id'] and Note.id == note_id).update(data)
+            updated_notes = session.query(Note).filter(
+                Note.user_id == request['user']['id'] and Note.id == note_id).update(data)
 
         return json({'updated': updated_notes})
 
@@ -104,6 +102,7 @@ class NoteController(HTTPMethodView):
         title = request.json.get('title')
 
         with scoped_session() as session:
-            deleted_notes = session.query(Note).filter(Note.user_id == request['user']['id'] and Note.title == title).delete()
+            deleted_notes = session.query(Note).filter(
+                Note.user_id == request['user']['id'] and Note.title == title).delete()
 
         return json({'deleted': deleted_notes})

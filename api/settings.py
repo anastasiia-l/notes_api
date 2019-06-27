@@ -1,9 +1,16 @@
+import os
+
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("postgresql+psycopg2://test_user:test_password@db:5432/notes_db", echo=True)
+engine = create_engine("postgresql+psycopg2://{user}:{password}@db:{host}/{name}".format(user=os.environ.get('DB_USER'),
+                                                                                         password=os.environ.get(
+                                                                                             'DB_PASSWORD'),
+                                                                                         host=os.environ.get('DB_HOST'),
+                                                                                         name=os.environ.get(
+                                                                                             'DB_NAME')), echo=True)
 Session = sessionmaker(bind=engine)
 
 

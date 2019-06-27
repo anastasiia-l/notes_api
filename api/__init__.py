@@ -7,7 +7,6 @@ from api.models import User
 
 
 def create_app():
-
     app = Sanic(__name__)
 
     from .controllers import UserController, Registration, Auth, NoteController
@@ -32,4 +31,4 @@ def create_app():
                 user = session.query(User).filter_by(token=request.token).first()._asdict()
             request["user"] = user
 
-    app.go_fast(host="0.0.0.0", port=5000, debug=True, workers=os.cpu_count())
+    app.go_fast(host=os.environ.get('HOST'), port=os.environ.get('PORT'), debug=True, workers=os.cpu_count())
