@@ -72,9 +72,7 @@ class NoteController(HTTPMethodView):
 
     async def get(self, request):
         with scoped_session() as session:
-            user = session.query(User).filter_by(token=request.token).first()
-
-            notes = [ note._asdict() for note in session.query(Note).filter_by(user_id=user.id)]
+            notes = [ note._asdict() for note in session.query(Note).filter_by(user_id=request['user']['id']) ]
 
         return json({'notes': notes})
 
@@ -85,12 +83,11 @@ class NoteController(HTTPMethodView):
         current_datetime = datetime.datetime.now()
 
         with scoped_session() as session:
-            user = session.query(User).filter_by(token=request.token).first()
-            note = Note(user_id=user.id, title=title, text=text, datetime=current_datetime)
+            note = Note(user_id=request['user']['id'], title=title, text=text, datetime=current_datetime)
             session.add(note)
-            print(note)
+            session.expunge(note)
 
-        return json({'msg': 'Successfully created'})
+        return json({'msg': 'Successfully created {}'.format(note)})
 
     async def patch(self, request):
         note_id = request.json.get('id')
@@ -100,8 +97,7 @@ class NoteController(HTTPMethodView):
             data.pop("id")
 
         with scoped_session() as session:
-            user = session.query(User).filter_by(token=request.token).first()
-            updated_notes = session.query(Note).filter(Note.user_id == user.id and Note.id == note_id).update(data)
+            updated_notes = session.query(Note).filter(Note.user_id == request['user']['id'] and Note.id == note_id).update(data)
 
         return json({'updated': updated_notes})
 
@@ -109,9 +105,6 @@ class NoteController(HTTPMethodView):
         title = request.json.get('title')
 
         with scoped_session() as session:
-            user = session.query(User).filter_by(token=request.token).first()
-
-            deleted_notes = session.query(Note).filter(Note.user_id == user.id and Note.title == title).delete()
+            deleted_notes = session.query(Note).filter(Note.user_id == request['user']['id'] and Note.title == title).delete()
 
         return json({'deleted': deleted_notes})
-

@@ -48,6 +48,7 @@ class Note(Base):
     text = Column(String(500), nullable=True)
 
     def __repr__(self):
-        return "<Note(id={}, title={})>".format(str(self.id), self.title)
+        return "<Note(id={}, title={})>".format(self.id, self.title)
+
 
 Base.metadata.create_all(engine)
